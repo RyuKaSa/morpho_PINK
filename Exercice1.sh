@@ -38,3 +38,29 @@ surimp uo.pgm tempo/out10.pgm result_1_2_RED_DIFF.pgm
 # -----------------------------------
 # Exercice 1_3
 # -----------------------------------
+
+total_white_pixels=$(area result_1_2_BW.pgm)
+echo "Total white pixels: $total_white_pixels"
+
+num_components=$(nbcomp result_1_2_BW.pgm 4 fgd)
+echo "Number of components: $num_components"
+
+# Calculate the average number of pixels per component
+if [ "$num_components" -gt 0 ]; then
+    avg_pixels_per_component=$((total_white_pixels / num_components))
+    echo "Average pixels per component: $avg_pixels_per_component"
+else
+    echo "No components found."
+fi
+# this outputs :
+# ```
+# Total white pixels: 364581
+# Number of components: 101
+# Average pixels per component: 3609
+# ```
+
+# -----------------------------------
+# Exercice 2_1
+# -----------------------------------
+
+
