@@ -93,4 +93,3 @@ surimp bloodcells.pgm result_2_2_BW.pgm result_2_2_RED_DIFF.pgm
 
 dist result_2_2_BW.pgm 1 tempo/distMap.pgm
 long2byte tempo/distMap.pgm 1 tempo/distMap_Byte.pgm
-
