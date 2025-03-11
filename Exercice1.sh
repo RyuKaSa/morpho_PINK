@@ -63,4 +63,34 @@ fi
 # Exercice 2_1
 # -----------------------------------
 
+# white pixels are blood cells in out12, they are in black in out11
+seuil bloodcells.pgm 128 tempo/out11.pgm
+inverse tempo/out11.pgm tempo/out12.pgm
+areaclosing tempo/out12.pgm 4 500 result_2_1_BW.pgm
+inverse result_2_1_BW.pgm tempo/out11.pgm
+surimp bloodcells.pgm result_2_1_BW.pgm result_2_1_RED_DIFF.pgm
+
+
+# -----------------------------------
+# Exercice 2_2
+# -----------------------------------
+
+# remove from edges
+frame tempo/out11.pgm 1 tempo/out13.pgm
+inverse tempo/out11.pgm tempo/out14.pgm
+geodilat tempo/out13.pgm tempo/out14.pgm 4 -1 tempo/out15.pgm
+sub tempo/out14.pgm tempo/out15.pgm result_2_2_BW.pgm
+surimp bloodcells.pgm result_2_2_BW.pgm result_2_2_RED_DIFF.pgm
+
+
+# -----------------------------------
+# Exercice 2_3
+# -----------------------------------
+
+# -----------------------------------
+# Exercice 2_3: Separate Touching Cells
+# -----------------------------------
+
+dist result_2_2_BW.pgm 1 tempo/distMap.pgm
+long2byte tempo/distMap.pgm 1 tempo/distMap_Byte.pgm
 
