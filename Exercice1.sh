@@ -64,7 +64,7 @@ fi
 # -----------------------------------
 
 # white pixels are blood cells in out12, they are in black in out11
-seuil bloodcells.pgm 128 tempo/out11.pgm
+seuil bloodcells.pgm 136 tempo/out11.pgm
 inverse tempo/out11.pgm tempo/out12.pgm
 areaclosing tempo/out12.pgm 4 500 result_2_1_BW.pgm
 inverse result_2_1_BW.pgm tempo/out11.pgm
@@ -86,10 +86,50 @@ surimp bloodcells.pgm result_2_2_BW.pgm result_2_2_RED_DIFF.pgm
 # -----------------------------------
 # Exercice 2_3
 # -----------------------------------
+# do distance on complement of components, so when BG is white, to get ragional maximums, for cell centers,
+# then inverse the distance map to get BG as max height, and cap before the valleys touch, to get separated cells 
+
+inverse result_2_2_BW.pgm tempo/out16.pgm
+dist tempo/out16.pgm 1 tempo/out17.pgm
+long2byte tempo/out17.pgm 1 tempo/out18.pgm
+inverse tempo/out18.pgm tempo/out19.pgm
+pgm2GA tempo/out19.pgm 2 tempo/out20.ga
+GAwatershed tempo/out20.ga tempo/out21.ga
+GA2khalimsky tempo/out21.ga 0 tempo/out22.pgm
+pgm2GA result_2_2_BW.pgm 1 tempo/out23.ga
+GA2khalimsky tempo/out23.ga 0 tempo/out24.pgm
+sub tempo/out24.pgm tempo/out22.pgm result_2_3_BW.pgm
+zoom result_2_3_BW.pgm 0.5 tempo/out25.pgm
+surimp bloodcells.pgm tempo/out25.pgm result_2_3_RED_DIFF.pgm
 
 # -----------------------------------
-# Exercice 2_3: Separate Touching Cells
+# Exercice 2_4
 # -----------------------------------
 
-dist result_2_2_BW.pgm 1 tempo/distMap.pgm
-long2byte tempo/distMap.pgm 1 tempo/distMap_Byte.pgm
+# Calculate the total number of white pixels in the binary image result_2_3_BW.pgm
+total_white_pixels=$(area result_2_3_BW.pgm)
+echo "Total white pixels: $total_white_pixels"
+
+# Count the number of components (connected components) in the image result_2_3_BW.pgm (after Exercice 2_3)
+num_components_after=$(nbcomp result_2_3_BW.pgm 4 fgd)
+echo "Number of components (after Exercice 2_3): $num_components_after"
+
+# Count the number of components (connected components) in the image result_2_2_BW.pgm (before Exercice 2_3)
+num_components_before=$(nbcomp result_2_2_BW.pgm 4 fgd)
+echo "Number of components (before Exercice 2_3): $num_components_before"
+
+# Calculate the number of components that were broken up during the process
+if [ "$num_components_after" -gt "$num_components_before" ]; then
+    num_broken_up=$((num_components_after - num_components_before))
+    echo "Number of components that were broken up: $num_broken_up"
+else
+    echo "No components were broken up."
+fi
+
+# Calculate the average number of pixels per component after the process
+if [ "$num_components_after" -gt 0 ]; then
+    avg_pixels_per_component=$((total_white_pixels / num_components_after))
+    echo "Average pixels per component (after Exercice 2_3): $avg_pixels_per_component"
+else
+    echo "No components found after Exercice 2_3."
+fi
